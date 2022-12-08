@@ -28,7 +28,7 @@ const Container = () => {
   const getData = async () => {
     try {
       const response = await axios.get(
-        `https://api.currencyapi.com/v3/currencies?apikey=SgMiRsRrIIT4q2UsVACTweIqhnE74fVgvGH6ttzO`,
+        `https://api.currencyapi.com/v3/currencies?apikey=8cs4h4e8nPt6fMxQsDtSwQZTsHIat77u3W6oXD4q`,
       );
       setCurrencies(Object.values(response.data.data));
     } catch (err) {
@@ -37,8 +37,8 @@ const Container = () => {
   };
 
   return (
-    <div className="w-screen h-screen lg:w-[75%] lg:h-[500px] bg-gray-600 flex flex-col lg:flex-row items-center justify-around rounded-lg">
-      <div className="bg-red-600 h-full w-full flex flex-col items-center justify-center gap-4">
+    <div className="w-screen h-screen lg:w-[75%] lg:h-[500px] bg-transparent flex flex-col lg:flex-row items-center justify-around rounded-lg">
+      <div className="bg-white/[0.19] rounded-2xl backdrop-blur-[7.1px] shadow-[0_4px_30px_rgba(0,0,0,0.1)] h-full w-full flex flex-col items-center justify-center gap-4">
         <div className="lg:w-[60%] w-[70%] flex h-full flex-col items-center justify-center gap-4">
           <label htmlFor="name" className="w-full relative">
             <input
@@ -59,7 +59,7 @@ const Container = () => {
                 initial={{ x: -180, y: 100, rotate: -60, scale: 0, opacity: 0 }}
                 animate={{ x: 0, y: 0, rotate: 0, scale: 1, opacity: 1 }}
                 exit={{ x: -180, y: 100, rotate: -60, opacity: 0 }}
-                className="absolute right-2 top-2 z-20"
+                className="absolute right-2 top-2 z-20 cursor-pointer text-white"
               >
                 <RxCross2
                   size={30}
@@ -87,18 +87,18 @@ const Container = () => {
                 );
               }}
             />
-            {!selectedCurrencies.first && (
-              <AnimatePresence>
+            <AnimatePresence>
+              {!selectedCurrencies.first && (
                 <motion.div
                   initial={{ x: -180, y: 100, rotate: -60, scale: 0, opacity: 0 }}
                   animate={{ x: 0, y: 0, rotate: 0, scale: 1, opacity: 1 }}
                   exit={{ x: -180, y: 100, rotate: -60, opacity: 0 }}
-                  className="h-[200px] overflow-y-auto flex flex-col border-[1px] p-2 rounded-lg"
+                  className="h-[200px] text-white overflow-y-auto flex flex-col border-[1px] p-2 rounded-lg"
                 >
                   {searchedCurrencies.map((curr) => (
                     <div
                       key={curr.code}
-                      className="flex justify-between"
+                      className="flex justify-between cursor-pointer"
                       onClick={() =>
                         setSelectedCurrencies({ ...selectedCurrencies, first: curr.code })
                       }
@@ -108,20 +108,20 @@ const Container = () => {
                     </div>
                   ))}
                 </motion.div>
-              </AnimatePresence>
-            )}
+              )}
+            </AnimatePresence>
           </div>
         </div>
       </div>
-      <div className="bg-red-200 h-auto w-auto flex items-center justify-center">
+      <div className=" h-auto w-auto flex items-center justify-center p-3">
         <lord-icon
           src="https://cdn.lordicon.com/akuwjdzh.json"
           trigger="hover"
-          colors="primary:#1D4ED8"
+          colors="primary:#f2f2f2"
           style={{ width: '100px', height: '100px' }}
         ></lord-icon>
       </div>
-      <div className="bg-red-600 h-full w-full flex flex-col items-center justify-center"></div>
+      <div className="bg-white/[0.19] rounded-2xl backdrop-blur-[7.1px] shadow-[0_4px_30px_rgba(0,0,0,0.1)] h-full w-full flex flex-col items-center justify-center"></div>
     </div>
   );
 };
