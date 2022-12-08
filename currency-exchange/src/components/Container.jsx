@@ -38,7 +38,7 @@ const Container = () => {
 
   return (
     <div className="w-screen h-screen lg:w-[75%] lg:h-[500px] bg-transparent flex flex-col lg:flex-row items-center justify-around rounded-lg">
-      <div className="bg-white/[0.19] rounded-2xl backdrop-blur-[7.1px] shadow-[0_4px_30px_rgba(0,0,0,0.1)] h-full w-full flex flex-col items-center justify-center gap-4">
+      <div className="bg-white/[0.19] rounded-b-2xl lg:rounded-2xl backdrop-blur-[7.1px] shadow-[0_4px_30px_rgba(0,0,0,0.1)] h-full w-full flex flex-col items-center justify-center gap-4">
         <div className="lg:w-[60%] w-[75%] flex h-full flex-col items-center justify-center gap-4">
           <label htmlFor="name" className="w-full relative">
             <input
@@ -101,7 +101,7 @@ const Container = () => {
                     {searchedCurrencies.map((curr) => (
                       <div
                         key={curr.code}
-                        className="flex justify-between cursor-pointer p-2 hover:bg-[#4568dc]"
+                        className="flex justify-between cursor-pointer py-2 px-3 hover:bg-[#4568dc]"
                         onClick={() =>
                           setSelectedCurrencies({ ...selectedCurrencies, first: curr.code })
                         }
@@ -127,7 +127,7 @@ const Container = () => {
           style={{ width: '100px', height: '100px' }}
         ></lord-icon>
       </div>
-      <div className="bg-white/[0.19] rounded-2xl backdrop-blur-[7.1px] shadow-[0_4px_30px_rgba(0,0,0,0.1)] h-full w-full flex flex-col items-center justify-center"></div>
+      <div className="bg-white/[0.19] rounded-t-2xl lg:rounded-2xl backdrop-blur-[7.1px] shadow-[0_4px_30px_rgba(0,0,0,0.1)] h-full w-full flex flex-col items-center justify-center"></div>
     </div>
   );
 };
