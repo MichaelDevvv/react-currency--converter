@@ -126,7 +126,7 @@ const Container = () => {
           </div>
         </div>
       </div>
-      <div className=" h-auto w-auto flex items-center justify-center p-3">
+      <div className=" h-auto w-auto flex items-center justify-center p-3 flex-col gap-20">
         <lord-icon
           src="https://cdn.lordicon.com/akuwjdzh.json"
           trigger="loop-on-hover"
@@ -144,6 +144,10 @@ const Container = () => {
             }));
           }}
         />
+
+        <button className="hidden lg:block h-14 w-40 rounded-lg bg-white/[0.19] backdrop-blur-[7.1px] shadow-[0_4px_30px_rgba(0,0,0,0.1)] text-white border-2 border-white">
+          Convert
+        </button>
       </div>
       <div className="bg-white/[0.19] rounded-t-2xl lg:rounded-2xl backdrop-blur-[7.1px] shadow-[0_4px_30px_rgba(0,0,0,0.1)] h-full w-full flex flex-col items-center justify-center">
         <div className="lg:w-[60%] w-[75%] flex h-full flex-col items-center justify-center gap-4">
@@ -226,6 +230,9 @@ const Container = () => {
             </AnimatePresence>
           </div>
         </div>
+        <button className="lg:hidden h-14 w-40 rounded-lg bg-white/[0.19] backdrop-blur-[7.1px] shadow-[0_4px_30px_rgba(0,0,0,0.1)] text-white border-2 border-white mt-1">
+          Convert
+        </button>
       </div>
     </div>
   );
