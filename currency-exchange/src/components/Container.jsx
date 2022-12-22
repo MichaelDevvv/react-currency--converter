@@ -8,8 +8,7 @@ import { RxCross2 } from 'react-icons/rx';
 
 const Container = () => {
   const [currencies, setCurrencies] = useState([]);
-  const [searchedTerm, setSearchedTerm] = useState('');
-  const [searchedTerm1, setSearchedTerm1] = useState([]);
+  const [searchedTerms, setSearchedTerms] = useState({ first: '', second: '' });
   const [quantity, setQuantity] = useState({ first: '', second: '' });
   const [searchedCurrencies, setSearchedCurrencies] = useState([]);
   const [searchedCurrencies1, setSearchedCurrencies1] = useState([]);
@@ -33,7 +32,7 @@ const Container = () => {
   const getData = async () => {
     try {
       const response = await axios.get(
-        `https://api.currencyapi.com/v3/currencies?apikey=8cs4h4e8nPt6fMxQsDtSwQZTsHIat77u3W6oXD4q`,
+        `https://api.currencyapi.com/v3/currencies?apikey=3HSvDZS8K61Hgbnhqg8sLo2Jz2IjJBFT0qU7Ij74`,
       );
       setCurrencies(Object.values(response.data.data));
     } catch (err) {
@@ -73,7 +72,7 @@ const Container = () => {
                     size={30}
                     onClick={() => {
                       setSelectedCurrencies({ ...selectedCurrencies, first: null });
-                      setSearchedTerm('');
+                      setSearchedTerms((prev) => ({ first: '', second: prev.second }));
                       setSearchedCurrencies(currencies);
                     }}
                   />
@@ -84,9 +83,9 @@ const Container = () => {
               type="text"
               className="p-2 w-full outline-none base placeholder:opacity-0 border-[1px] rounded-lg bg-transparent text-lg text-white"
               autoComplete="off"
-              value={selectedCurrencies.first ? selectedCurrencies.first : searchedTerm}
+              value={selectedCurrencies.first ? selectedCurrencies.first : searchedTerms.first}
               onChange={(e) => {
-                setSearchedTerm(e.target.value);
+                setSearchedTerms((prev) => ({ first: e.target.value, second: prev.second }));
                 setSearchedCurrencies(
                   currencies.filter(
                     (c) =>
@@ -159,6 +158,7 @@ const Container = () => {
               className="p-2 w-full outline-none base placeholder:opacity-0 border-[1px] rounded-lg bg-transparent text-lg text-white"
               autoComplete="off"
               value={quantity.second}
+              onChange={(e) => setQuantity({ ...quantity, second: e.target.value })}
             />
             <span className="absolute bottom-2 left-1 duration-300 text-lg text-white">
               Quantity
@@ -178,7 +178,7 @@ const Container = () => {
                     size={30}
                     onClick={() => {
                       setSelectedCurrencies({ ...selectedCurrencies, second: null });
-                      setSearchedTerm1('');
+                      setSearchedTerms((prev) => ({ first: prev.first, second: '' }));
                       setSearchedCurrencies1(currencies);
                     }}
                   />
@@ -189,9 +189,9 @@ const Container = () => {
               type="text"
               className="p-2 w-full outline-none base placeholder:opacity-0 border-[1px] rounded-lg bg-transparent text-lg text-white"
               autoComplete="off"
-              value={selectedCurrencies.second ? selectedCurrencies.second : searchedTerm1}
+              value={selectedCurrencies.second ? selectedCurrencies.second : searchedTerms.second}
               onChange={(e) => {
-                setSearchedTerm1(e.target.value);
+                setSearchedTerms((prev) => ({ first: prev.first, second: e.target.value }));
                 setSearchedCurrencies1(
                   currencies.filter(
                     (c) =>
