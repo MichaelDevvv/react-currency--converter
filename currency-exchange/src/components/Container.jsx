@@ -7,9 +7,10 @@ import '../index.css';
 import { RxCross2 } from 'react-icons/rx';
 
 const Container = () => {
+  const [result, setResult] = useState(0);
   const [currencies, setCurrencies] = useState([]);
   const [searchedTerms, setSearchedTerms] = useState({ first: '', second: '' });
-  const [quantity, setQuantity] = useState({ first: '', second: '' });
+  const [quantity, setQuantity] = useState('');
   const [searchedCurrencies, setSearchedCurrencies] = useState([]);
   const [searchedCurrencies1, setSearchedCurrencies1] = useState([]);
   const [selectedCurrencies, setSelectedCurrencies] = useState({ first: '', second: '' });
@@ -19,24 +20,38 @@ const Container = () => {
   }, []);
 
   useEffect(() => {
-    console.log(currencies);
+    // console.log(currencies);
     setSearchedCurrencies(currencies);
     setSearchedCurrencies1(currencies);
   }, [currencies]);
 
   useEffect(() => {
-    console.log(selectedCurrencies);
-    console.log(quantity);
-  }, [selectedCurrencies, quantity]);
+    console.log(selectedCurrencies, quantity);
+  }, [selectedCurrencies, quantity, result]);
 
   const getData = async () => {
     try {
-      const response = await axios.get(
-        `https://api.currencyapi.com/v3/currencies?apikey=3HSvDZS8K61Hgbnhqg8sLo2Jz2IjJBFT0qU7Ij74`,
-      );
-      setCurrencies(Object.values(response.data.data));
+      const response = await axios.get(`https://api.exchangerate.host/symbols`);
+      setCurrencies(Object.values(response.data.symbols));
     } catch (err) {
       setCurrencies(null);
+    }
+  };
+
+  const convert = async () => {
+    if (selectedCurrencies.first && selectedCurrencies.second) {
+      try {
+        const response = await axios.get(
+          `https://api.exchangerate.host/convert?from=${selectedCurrencies.first}&to=${
+            selectedCurrencies.second
+          }&amount=${quantity ? quantity : 0}`,
+        );
+        setResult(Math.round((response.data.result + Number.EPSILON) * 100) / 100);
+        // setResult(response.data.query);
+        console.log(result);
+      } catch (err) {
+        console.log('error');
+      }
     }
   };
 
@@ -51,8 +66,13 @@ const Container = () => {
               placeholder="quantity"
               className="p-2 w-full outline-none base placeholder:opacity-0 border-[1px] rounded-lg bg-transparent text-lg text-white"
               autoComplete="off"
-              value={quantity.first}
-              onChange={(e) => setQuantity({ ...quantity, first: e.target.value })}
+              value={quantity}
+              onChange={(e) => {
+                setQuantity(e.target.value !== '' ? Number(e.target.value) : '');
+                convert();
+              }}
+              // onClick={() => convert()}
+              spellCheck={false}
             />
             <span className="absolute bottom-2 left-1 duration-300 text-lg text-white">
               Quantity
@@ -90,7 +110,7 @@ const Container = () => {
                   currencies.filter(
                     (c) =>
                       c.code.toLowerCase().includes(e.target.value.toLowerCase()) ||
-                      c.name.toLowerCase().includes(e.target.value.toLowerCase()),
+                      c.description.toLowerCase().includes(e.target.value.toLowerCase()),
                   ),
                 );
               }}
@@ -108,13 +128,16 @@ const Container = () => {
                       <div
                         key={curr.code}
                         className="flex justify-between cursor-pointer py-2 px-3 hover:bg-[#4568dc]"
-                        onClick={() =>
-                          setSelectedCurrencies({ ...selectedCurrencies, first: curr.code })
-                        }
+                        onClick={() => {
+                          setSelectedCurrencies({ ...selectedCurrencies, first: curr.code });
+                          convert();
+                        }}
                       >
                         <span>{curr.code}</span>
                         <span>
-                          {curr.name.length < 20 ? curr.name : `${curr.name.slice(0, 10)}...`}
+                          {curr.description.length < 20
+                            ? curr.description
+                            : `${curr.description.slice(0, 10)}...`}
                         </span>
                       </div>
                     ))}
@@ -136,33 +159,25 @@ const Container = () => {
               first: prev.second,
               second: prev.first,
             }));
-
-            setQuantity((prev) => ({
-              first: prev.second,
-              second: prev.first,
-            }));
+            setQuantity(result);
+            convert();
           }}
         />
-
-        <button className="hidden lg:block h-14 w-40 rounded-lg bg-white/[0.19] backdrop-blur-[7.1px] shadow-[0_4px_30px_rgba(0,0,0,0.1)] text-white border-2 border-white">
-          Convert
-        </button>
       </div>
       <div className="bg-white/[0.19] rounded-t-2xl lg:rounded-2xl backdrop-blur-[7.1px] shadow-[0_4px_30px_rgba(0,0,0,0.1)] h-full w-full flex flex-col items-center justify-center">
         <div className="lg:w-[60%] w-[75%] flex h-full flex-col items-center justify-center gap-4">
           <label htmlFor="name1" className="w-full relative">
             <input
-              type="number"
+              type="text"
               id="name1"
               placeholder="quantity"
               className="p-2 w-full outline-none base placeholder:opacity-0 border-[1px] rounded-lg bg-transparent text-lg text-white"
               autoComplete="off"
-              value={quantity.second}
-              onChange={(e) => setQuantity({ ...quantity, second: e.target.value })}
+              value={result}
+              spellCheck={false}
+              disabled
             />
-            <span className="absolute bottom-2 left-1 duration-300 text-lg text-white">
-              Quantity
-            </span>
+            <span className="absolute bottom-2 left-1 duration-300 text-lg text-white">Result</span>
           </label>
 
           <div className="w-full flex flex-col gap-2 relative overflow-hidden">
@@ -196,7 +211,7 @@ const Container = () => {
                   currencies.filter(
                     (c) =>
                       c.code.toLowerCase().includes(e.target.value.toLowerCase()) ||
-                      c.name.toLowerCase().includes(e.target.value.toLowerCase()),
+                      c.description.toLowerCase().includes(e.target.value.toLowerCase()),
                   ),
                 );
               }}
@@ -214,13 +229,16 @@ const Container = () => {
                       <div
                         key={curr.code}
                         className="flex justify-between cursor-pointer py-2 px-3 hover:bg-[#4568dc]"
-                        onClick={() =>
-                          setSelectedCurrencies({ ...selectedCurrencies, second: curr.code })
-                        }
+                        onClick={() => {
+                          setSelectedCurrencies({ ...selectedCurrencies, second: curr.code });
+                          convert();
+                        }}
                       >
                         <span>{curr.code}</span>
                         <span>
-                          {curr.name.length < 20 ? curr.name : `${curr.name.slice(0, 10)}...`}
+                          {curr.description.length < 20
+                            ? curr.description
+                            : `${curr.description.slice(0, 10)}...`}
                         </span>
                       </div>
                     ))}
@@ -230,9 +248,6 @@ const Container = () => {
             </AnimatePresence>
           </div>
         </div>
-        <button className="lg:hidden h-14 w-40 rounded-lg bg-white/[0.19] backdrop-blur-[7.1px] shadow-[0_4px_30px_rgba(0,0,0,0.1)] text-white border-2 border-white mt-1">
-          Convert
-        </button>
       </div>
     </div>
   );
