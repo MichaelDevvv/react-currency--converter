@@ -20,14 +20,17 @@ const Container = () => {
   }, []);
 
   useEffect(() => {
-    // console.log(currencies);
     setSearchedCurrencies(currencies);
     setSearchedCurrencies1(currencies);
   }, [currencies]);
 
   useEffect(() => {
-    console.log(selectedCurrencies, quantity);
-  }, [selectedCurrencies, quantity, result]);
+    convert();
+  }, [quantity, selectedCurrencies]);
+
+  useEffect(() => {
+    // console.log(selectedCurrencies, quantity, result);
+  }, [selectedCurrencies, quantity]);
 
   const getData = async () => {
     try {
@@ -39,7 +42,13 @@ const Container = () => {
   };
 
   const convert = async () => {
-    if (selectedCurrencies.first && selectedCurrencies.second) {
+    if (
+      selectedCurrencies.first !== null &&
+      selectedCurrencies.second !== null &&
+      selectedCurrencies.first !== '' &&
+      selectedCurrencies.second !== ''
+    ) {
+      console.log('oblicz');
       try {
         const response = await axios.get(
           `https://api.exchangerate.host/convert?from=${selectedCurrencies.first}&to=${
@@ -47,8 +56,6 @@ const Container = () => {
           }&amount=${quantity ? quantity : 0}`,
         );
         setResult(Math.round((response.data.result + Number.EPSILON) * 100) / 100);
-        // setResult(response.data.query);
-        console.log(result);
       } catch (err) {
         console.log('error');
       }
@@ -69,7 +76,6 @@ const Container = () => {
               value={quantity}
               onChange={(e) => {
                 setQuantity(e.target.value !== '' ? Number(e.target.value) : '');
-                convert();
               }}
               // onClick={() => convert()}
               spellCheck={false}
@@ -96,6 +102,7 @@ const Container = () => {
                       setSearchedCurrencies(currencies);
                     }}
                   />
+                  -
                 </motion.div>
               )}
             </AnimatePresence>
@@ -122,7 +129,7 @@ const Container = () => {
                     initial={{ x: -180, y: 100, rotate: -60, scale: 0, opacity: 0 }}
                     animate={{ x: 0, y: 0, rotate: 0, scale: 1, opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="h-[200px] text-white overflow-y-auto flex flex-col border-[1px] rounded-lg"
+                    className="h-[150px] lg:h-[200px] text-white overflow-y-auto flex flex-col border-[1px] rounded-lg"
                   >
                     {searchedCurrencies.map((curr) => (
                       <div
@@ -130,7 +137,6 @@ const Container = () => {
                         className="flex justify-between cursor-pointer py-2 px-3 hover:bg-[#4568dc]"
                         onClick={() => {
                           setSelectedCurrencies({ ...selectedCurrencies, first: curr.code });
-                          convert();
                         }}
                       >
                         <span>{curr.code}</span>
@@ -160,7 +166,6 @@ const Container = () => {
               second: prev.first,
             }));
             setQuantity(result);
-            convert();
           }}
         />
       </div>
@@ -223,16 +228,15 @@ const Container = () => {
                     initial={{ x: -180, y: 100, rotate: -60, scale: 0, opacity: 0 }}
                     animate={{ x: 0, y: 0, rotate: 0, scale: 1, opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="h-[200px] text-white overflow-y-auto flex flex-col border-[1px] rounded-lg"
+                    className="h-[150px] lg:h-[200px] text-white overflow-y-auto flex flex-col border-[1px] rounded-lg"
                   >
                     {searchedCurrencies1.map((curr) => (
                       <div
                         key={curr.code}
                         className="flex justify-between cursor-pointer py-2 px-3 hover:bg-[#4568dc]"
-                        onClick={() => {
-                          setSelectedCurrencies({ ...selectedCurrencies, second: curr.code });
-                          convert();
-                        }}
+                        onClick={() =>
+                          setSelectedCurrencies({ ...selectedCurrencies, second: curr.code })
+                        }
                       >
                         <span>{curr.code}</span>
                         <span>
